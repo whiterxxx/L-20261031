@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ja">
-<!-- Revision: board-labels-20261009-1921 / new L image -->
+<!-- Revision: compact-board-20261009-1942 / serif memos -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap">
 <style>
-:root{color-scheme:light;--paper:#fafafa;--ink:#242424;--red:#b62836;--hand:Caveat,'Bradley Hand',Noteworthy,cursive;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+:root{color-scheme:light;--paper:#fafafa;--ink:#242424;--red:#b62836;--hand:Caveat,'Bradley Hand',Noteworthy,cursive;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--serif:"Times New Roman",Georgia,"Hiragino Mincho ProN","Yu Mincho",serif}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#ffffff;color:var(--ink)}body{font-family:Georgia,'Yu Mincho',serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit}a{color:inherit}button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:6px}[hidden]{display:none!important}
 .credit{font:9px/1.8 var(--mono);letter-spacing:.06em;text-align:center;font-weight:400}
 .entrance{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:28px 24px 70px;background:#ffffff;color:#222;text-align:center;transition:opacity .6s,transform .6s}
@@ -28,11 +28,11 @@
 .photo-face{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f5f5f5;border:1px solid #e9e9e9}
 .logo-card img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;flex-shrink:0}
 .photo-caption{position:absolute;left:12px;bottom:10px;font:8px var(--mono);letter-spacing:.2em;color:#777}
-.subject{left:50%;top:33%;width:24%;max-width:320px;height:auto;margin-left:calc(-1 * min(12vw,160px));--angle:-1.7deg}.subject .photo-face{height:auto;aspect-ratio:480/545;flex-shrink:0;background:#fff}.subject img.board-l-logo{display:block;width:100%;height:auto;aspect-ratio:480/545;object-fit:contain;flex-shrink:0}
+.subject{left:50%;top:30%;width:24%;max-width:320px;height:auto;margin-left:calc(-1 * min(12vw,160px));--angle:-1.7deg}.subject .photo-face{height:auto;aspect-ratio:480/545;flex-shrink:0;background:#fff}.subject img.board-l-logo{display:block;width:100%;height:auto;aspect-ratio:480/545;object-fit:contain;flex-shrink:0}
 .kira{left:32%;top:7%;width:14%;height:18%;--angle:2deg}.kira .photo-face{background:#050505;border-color:#050505}.kira img{mix-blend-mode:normal}
-.mello{left:13%;top:35%;width:14%;height:18%;--angle:-2.5deg}.near{left:12%;top:64%;width:14%;height:18%;--angle:1.5deg}
+.mello{left:13%;top:27%;width:14%;height:18%;--angle:-2.5deg}.near{left:12%;top:49%;width:14%;height:18%;--angle:1.5deg}
 .mello .photo-face img,.near .photo-face img{width:120%;height:120%}
-.reader-card{left:74%;top:56%;width:20%;height:auto;--angle:-3deg;display:flex;align-items:center;justify-content:center;padding:18px 14px;box-shadow:0 15px 28px #0004}
+.reader-card{left:calc(50% + min(12vw,160px) - 10px);top:calc(30% + min(16vw,214px));width:20%;max-width:260px;height:auto;--angle:-3deg;display:flex;align-items:center;justify-content:center;padding:18px 14px;box-shadow:0 15px 28px #0004}
 .reader-name{font:500 clamp(38px,5vw,70px)/1.1 var(--hand);white-space:nowrap;max-width:100%;transform:rotate(-2deg)}
 .memo{z-index:6;text-align:left;text-decoration:none;display:block;padding:25px 21px 28px;cursor:pointer;background:#f8f8f7;box-shadow:0 5px 8px #0003,0 16px 28px #0006;transition:box-shadow .3s,filter .3s;animation:memo-float 4.8s ease-in-out infinite;animation-delay:var(--delay,0s)}
 .memo::after{content:'↗';position:absolute;right:11px;bottom:9px;width:22px;height:22px;text-align:center;border:1px solid #aaa;border-radius:50%;font:14px/20px var(--mono);color:#4f4f4f;transition:background .25s,color .25s}
@@ -41,15 +41,15 @@
 .memo:hover::after,.memo:focus-visible::after{background:#222;color:white;border-color:#222}
 .memo:active{filter:brightness(.94);box-shadow:0 3px 8px #0005}
 .memo-title{display:block;font:400 clamp(27px,3vw,43px)/1.1 var(--hand);margin-bottom:8px}.memo-sub{display:block;font-size:12px;line-height:1.8;letter-spacing:.05em}
-.case-memo{left:53%;top:13%;width:27%;--angle:-2.3deg}.birthday-memo{left:74%;top:81%;width:22%;--angle:2deg;padding-top:20px;padding-bottom:29px}.case-memo .memo-title,.birthday-memo .memo-title{font:500 clamp(17px,1.7vw,23px)/1.35 var(--mono);letter-spacing:.035em}.case-memo .memo-sub,.birthday-memo .memo-sub{font-family:var(--mono)}.date-memo{left:28%;top:81%;width:18%;--angle:-3deg}.date-memo .memo-title{font-size:45px;margin:0}.date-memo .memo-sub{font:10px/1.6 var(--mono);letter-spacing:.12em;margin-top:7px}
+.case-memo{left:53%;top:13%;width:27%;--angle:-2.3deg}.birthday-memo{left:calc(50% + min(12vw,160px) - 10px);top:74%;width:22%;--angle:2deg;padding-top:20px;padding-bottom:29px}.case-memo .memo-title,.birthday-memo .memo-title{font:400 clamp(20px,2vw,28px)/1.25 var(--serif);letter-spacing:.015em}.case-memo .memo-sub,.birthday-memo .memo-sub{font-family:var(--serif);letter-spacing:.02em}.date-memo{left:28%;top:70%;width:18%;--angle:-3deg}.date-memo .memo-title{font-size:45px;margin:0}.date-memo .memo-sub{font:10px/1.6 var(--mono);letter-spacing:.12em;margin-top:7px}
 @keyframes memo-float{0%,100%{transform:translateY(0) rotate(var(--angle,0deg))}50%{transform:translateY(-4px) rotate(var(--angle,0deg))}}
 .threads{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}.thread{fill:none;stroke:#9b9b9b;stroke-width:1.05;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 1px #0005)}.thread.red{stroke:var(--red);stroke-width:2.2}
 .board.is-entering{animation:appear .8s both}.board.is-entering .paper{animation:attach .85s both;animation-delay:var(--delay,0s)}.board.is-entering .threads{animation:appear .8s .5s both}
 @keyframes attach{from{opacity:0;transform:translateY(10px) rotate(calc(var(--angle,0deg) - 2deg))}to{opacity:1;transform:translateY(0) rotate(var(--angle,0deg))}}
 dialog{width:min(460px,calc(100% - 40px));padding:32px;background:#fff;color:var(--ink);border:1px solid #ddd;box-shadow:0 24px 80px #0005}dialog::backdrop{background:#111b;backdrop-filter:blur(4px)}dialog h2{font:32px var(--hand);margin:0 0 18px}dialog p{font-size:14px;line-height:2;white-space:pre-line}.close{display:block;margin:24px 0 0 auto;min-height:44px;padding:10px 18px;border:1px solid #999;background:none;cursor:pointer}
 
-@media(max-width:760px){.board{min-height:840px}.subject{left:34%;top:36%;width:35%;height:auto;max-width:none;margin-left:0}.kira{left:30%;top:6%;width:27%;height:14%}.mello{left:7%;top:29%;width:21%;height:14%}.near{left:6%;top:58%;width:21%;height:15%}.reader-card{left:71%;top:59%;width:26%;height:auto;padding:15px 7px}.reader-name{font-size:clamp(24px,6.8vw,43px)}.memo{padding:22px 13px 29px}.memo-title{font-size:31px}.memo-sub{font-size:11px;line-height:1.7}.case-memo{left:58%;top:23%;width:38%}.birthday-memo{left:61%;top:80%;width:35%;padding:22px 13px 29px}.case-memo .memo-title,.birthday-memo .memo-title{font-size:17px}.date-memo{left:9%;top:79%;width:31%}.date-memo .memo-title{font-size:43px}.logo-card{padding:7px 7px 24px}.photo-caption{font-size:7px;left:8px;bottom:8px}.pin{width:6px;height:6px;top:5px}.thread{stroke-width:1}.thread.red{stroke-width:2}.credit{font-size:8px}.memo::before{left:12px}.memo::after{width:20px;height:20px;font-size:12px;line-height:18px}}
-@media(max-width:360px){.reader-name{font-size:23px}.memo-sub{font-size:10px}.case-memo .memo-title,.birthday-memo .memo-title{font-size:15px}}
+@media(max-width:760px){.board{min-height:620px}.subject{left:35%;top:34%;width:34%;height:auto;max-width:none;margin-left:0}.kira{left:30%;top:6%;width:27%;height:14%}.mello{left:7%;top:20%;width:21%;height:14%}.near{left:6%;top:42%;width:21%;height:15%}.reader-card{left:66%;top:48%;width:29%;max-width:none;height:auto;padding:15px 7px}.reader-name{font-size:clamp(24px,6.8vw,43px)}.memo{padding:22px 13px 29px}.memo-title{font-size:31px}.memo-sub{font-size:11px;line-height:1.7}.case-memo{left:58%;top:22%;width:38%}.birthday-memo{left:61%;top:63%;width:35%;padding:22px 13px 29px}.case-memo .memo-title,.birthday-memo .memo-title{font-size:20px}.date-memo{left:9%;top:64%;width:31%}.date-memo .memo-title{font-size:43px}.logo-card{padding:7px 7px 24px}.photo-caption{font-size:7px;left:8px;bottom:8px}.pin{width:6px;height:6px;top:5px}.thread{stroke-width:1}.thread.red{stroke-width:2}.credit{font-size:8px}.memo::before{left:12px}.memo::after{width:20px;height:20px;font-size:12px;line-height:18px}}
+@media(max-width:360px){.reader-name{font-size:23px}.memo-sub{font-size:10px}.case-memo .memo-title,.birthday-memo .memo-title{font-size:18px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.entrance.is-leaving{transform:none}.logo-static{display:none}}
 
 
@@ -82,8 +82,8 @@ dialog{width:min(460px,calc(100% - 40px));padding:32px;background:#fff;color:var
  <section class="paper logo-card near" data-node="n" style="--delay:.18s" aria-label="N"><i class="pin" aria-hidden="true"></i><div class="photo-face"><img src="./n-logo.jpg" width="1178" height="925" alt="N"></div><span class="photo-caption">N</span></section>
  <section class="paper reader-card" data-node="reader" style="--delay:.22s" aria-label="Reader"><i class="pin" aria-hidden="true"></i><span class="reader-name">Reader</span></section>
  <svg class="threads" aria-hidden="true"><g id="thread-paths"></g></svg>
- <a class="paper memo case-memo" id="case-link" href="#" style="--delay:.15s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="case-title">KIRA case file</span><span class="memo-sub" id="case-label">キラ事件の記録</span></a>
- <a class="paper memo birthday-memo" id="birthday-link" href="#" style="--delay:.26s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="birthday-title">Another memories</span><span class="memo-sub" id="birthday-label">貴女と過ごした誕生日</span></a>
+ <a class="paper memo case-memo" id="case-link" href="#" style="--delay:.15s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="case-title">KIRA case file</span><span class="memo-sub" id="case-label">What happened back then?</span></a>
+ <a class="paper memo birthday-memo" id="birthday-link" href="#" style="--delay:.26s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="birthday-title">Another Memories</span><span class="memo-sub" id="birthday-label">XXX</span></a>
  <a class="paper memo date-memo" href="./logs.html" style="--delay:.2s" aria-label="10月31日のLのPCログを開く"><i class="pin" aria-hidden="true"></i><span class="memo-title">10/31</span><span class="memo-sub">SECRET LOG</span></a>
  <footer class="credit">Fan fiction made by @uni_ikr</footer>
 </main>
@@ -97,9 +97,9 @@ const CONFIG = {
  kiraNovelURL: "",
  birthdayNovelURL: "",
  kiraMemoTitle: "KIRA case file",
- kiraMemoLabel: "キラ事件の記録",
- birthdayMemoTitle: "Another memories",
- birthdayMemoLabel: "貴女と過ごした誕生日"
+ kiraMemoLabel: "What happened back then?",
+ birthdayMemoTitle: "Another Memories",
+ birthdayMemoLabel: "XXX"
 };
 const entrance=document.querySelector('#entrance'), board=document.querySelector('#board');
 const notice=document.querySelector('#notice'), paths=document.querySelector('#thread-paths');
