@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="He is still alive.">
+<title>L</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light;--paper:#f6f5f1;--ink:#242424;--red:#a51e2b;--hand:Caveat,'Bradley Hand',Noteworthy,cursive;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#111;color:var(--ink)}body{font-family:Georgia,'Yu Mincho',serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit}a{color:inherit}button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:6px}[hidden]{display:none!important}
+.entrance{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:30px;background:#111;color:#e6e6e6;text-align:center;transition:opacity .6s,transform .6s}
+.entrance.is-leaving{opacity:0;transform:scale(1.035);pointer-events:none}.entrance-inner{width:100%;max-width:360px}.entrance-logo{display:block;width:210px;height:300px;margin:0 auto 8px;object-fit:contain;filter:invert(1) grayscale(1);mix-blend-mode:screen;animation:appear 1.5s both}
+.alive{font:11px var(--mono);letter-spacing:.2em;line-height:2;margin:0;animation:appear 1.2s .45s both}.question{font-size:15px;font-weight:normal;letter-spacing:.09em;margin:35px 0 23px;animation:appear 1.2s .8s both}.choices{display:flex;gap:36px;justify-content:center;animation:appear 1.2s 1s both}.choice{font:11px var(--mono);letter-spacing:.22em;background:none;color:#eee;min-width:72px;min-height:44px;padding:12px 18px;border:1px solid #737373;cursor:pointer;transition:background .2s,color .2s}.choice:hover{background:#eee;color:#111}.choice.no{border-color:transparent;color:#999}.choice.no:hover{color:#eee;background:#222}.reply{min-height:30px;margin:22px 0 0;font:10px var(--mono);letter-spacing:.12em;color:#aaa}
+@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.board{position:relative;width:100%;height:100vh;height:100svh;min-height:740px;background:radial-gradient(ellipse at 50% 50%,#d8d8d5,#bcbcb9);overflow:hidden;isolation:isolate;outline:none}
+.board:before{content:'';position:absolute;inset:0;z-index:-1;opacity:.42;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23000' filter='url(%23n)' opacity='.24' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}
+.paper{position:absolute;z-index:3;background:var(--paper);border:1px solid #d6d5d0;box-shadow:2px 6px 10px #0003;transform:rotate(var(--angle,0deg));transform-origin:50% 12px}
+.pin{position:absolute;left:50%;top:10px;width:10px;height:10px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 33% 28%,#fff,#999 34%,#404040 80%);box-shadow:2px 3px 3px #0005;z-index:5}
+.logo-card{display:flex;align-items:center;justify-content:center;padding:22px 8px 10px}.logo-card img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.subject{left:41%;top:39%;width:22%;height:43%;--angle:-2deg}.kira{left:31%;top:6%;width:17%;height:20%;--angle:1.5deg;background:#050505;border-color:#050505}.kira img{mix-blend-mode:normal}.mello{left:13%;top:34%;width:16%;height:20%;--angle:-2deg}.near{left:12%;top:65%;width:16%;height:20%;--angle:2deg}
+.reader-card{left:73%;top:57%;width:22%;height:24%;--angle:-4deg;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:26px 16px 15px}.reader-name{font:500 clamp(38px,5vw,72px)/1.1 var(--hand);transform:rotate(-3deg)}.reader-note{font:18px/1.3 var(--hand);margin-top:12px;text-align:center}
+.memo{z-index:6;text-align:left;text-decoration:none;display:block;padding:25px 20px 20px;cursor:pointer;background:linear-gradient(120deg,#faf9f5,#ecebe6);transition:box-shadow .25s,filter .25s}.memo:hover{box-shadow:3px 12px 18px #0004;filter:brightness(1.035)}.memo:active{filter:brightness(.96)}.memo-title{display:block;font:400 clamp(27px,3vw,44px)/1.1 var(--hand);margin-bottom:8px}.memo-sub{display:block;font-size:12px;line-height:1.8;letter-spacing:.05em}.case-memo{left:53%;top:13%;width:27%;--angle:-3deg}.birthday-memo{left:75%;top:84%;width:21%;--angle:2.5deg;padding-top:20px;padding-bottom:15px}.birthday-memo .memo-title{font-size:32px}.date-memo{left:28%;top:84%;width:18%;--angle:-5deg}.date-memo .memo-title{font-size:48px;margin:0}.date-memo .memo-sub{font:13px var(--hand);letter-spacing:.08em;margin-top:5px}
+.threads{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}.thread{fill:none;stroke:#3e3e3e;stroke-width:1.4;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 1px #0003)}.thread.red{stroke:var(--red);stroke-width:2.2}.board.is-entering{animation:appear .8s both}.board.is-entering .paper{animation:attach .85s both;animation-delay:var(--delay,0s)}.board.is-entering .threads{animation:appear .8s .5s both}
+@keyframes attach{from{opacity:0;transform:translateY(10px) rotate(calc(var(--angle,0deg) - 2deg))}to{opacity:1;transform:translateY(0) rotate(var(--angle,0deg))}}
+dialog{width:min(460px,calc(100% - 40px));padding:32px;background:var(--paper);color:var(--ink);border:1px solid #999;box-shadow:0 20px 70px #0005}dialog::backdrop{background:#1119;backdrop-filter:blur(3px)}dialog h2{font:32px var(--hand);margin:0 0 18px}dialog p{font-size:14px;line-height:2;white-space:pre-line}.close{display:block;margin:24px 0 0 auto;min-height:44px;padding:10px 18px;border:1px solid #999;background:none;cursor:pointer}
+@media(max-width:760px){.board{min-height:780px}.subject{left:35%;top:38%;width:31%;height:32%}.kira{left:29%;top:5%;width:33%;height:14%}.mello{left:7%;top:28%;width:24%;height:15%}.near{left:6%;top:58%;width:25%;height:15%}.reader-card{left:69%;top:60%;width:28%;height:18%;padding:24px 8px 12px}.reader-name{font-size:44px}.reader-note{font-size:14px;line-height:1.2;margin-top:8px}.memo{padding:22px 12px 15px}.memo-title{font-size:31px}.memo-sub{font-size:11px;line-height:1.7}.case-memo{left:58%;top:23%;width:38%}.birthday-memo{left:61%;top:82%;width:35%;padding:22px 12px 15px}.birthday-memo .memo-title{font-size:31px}.date-memo{left:9%;top:78%;width:30%}.date-memo .memo-title{font-size:43px}.pin{width:8px;height:8px}.logo-card{padding:19px 5px 7px}.thread{stroke-width:1.1}.thread.red{stroke-width:2}}
+@media(max-width:360px){.reader-name{font-size:37px}.reader-note{font-size:12px}.memo-sub{font-size:10px}.case-memo .memo-title{font-size:28px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.entrance.is-leaving{transform:none}}
+</style>
+</head>
+<body>
+<section class="entrance" id="entrance" aria-label="入口">
+ <div class="entrance-inner"><img class="entrance-logo" src="./l-logo.jpg" width="525" height="800" alt="L"><p class="alive" id="alive-line">He is still alive.</p><h1 class="question" id="question-line">Do you believe it?</h1><div class="choices"><button class="choice" id="yes" type="button">YES</button><button class="choice no" id="no" type="button">NO</button></div><p class="reply" id="reply" aria-live="polite"></p></div>
+</section>
+<main class="board" id="board" hidden tabindex="-1" aria-label="捜査ボード">
+ <section class="paper logo-card subject" data-node="l" aria-label="L"><i class="pin" aria-hidden="true"></i><img src="./l-logo.jpg" width="525" height="800" alt="L"></section>
+ <section class="paper logo-card kira" data-node="kira" style="--delay:.08s" aria-label="Kira"><i class="pin" aria-hidden="true"></i><img src="./kira-logo.jpg" width="453" height="314" alt="Kira"></section>
+ <section class="paper logo-card mello" data-node="m" style="--delay:.12s" aria-label="M"><i class="pin" aria-hidden="true"></i><img src="./m-logo.jpg" width="428" height="296" alt="M"></section>
+ <section class="paper logo-card near" data-node="n" style="--delay:.18s" aria-label="N"><i class="pin" aria-hidden="true"></i><img src="./n-logo.jpg" width="1178" height="925" alt="N"></section>
+ <section class="paper reader-card" data-node="reader" style="--delay:.22s" aria-label="Reader"><i class="pin" aria-hidden="true"></i><span class="reader-name">Reader</span><span class="reader-note">exception.<br>Do NOT REMOVE.</span></section>
+ <svg class="threads" aria-hidden="true"><g id="thread-paths"></g></svg>
+ <a class="paper memo case-memo" id="case-link" href="#" style="--delay:.15s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="case-title">Case file</span><span class="memo-sub" id="case-label">キラ事件の記録</span></a>
+ <a class="paper memo birthday-memo" id="birthday-link" href="#" style="--delay:.26s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="birthday-title">Birthday</span><span class="memo-sub" id="birthday-label">貴女と過ごした誕生日</span></a>
+ <a class="paper memo date-memo" href="./logs.html" style="--delay:.2s" aria-label="10月31日のLのPCログを開く"><i class="pin" aria-hidden="true"></i><span class="memo-title">10/31</span><span class="memo-sub">private log ↗</span></a>
+</main>
+<dialog id="notice" aria-labelledby="notice-title"><h2 id="notice-title"></h2><p id="notice-body"></p><button type="button" class="close" id="notice-close">閉じる</button></dialog>
+<noscript><p style="color:white;text-align:center;padding:24px">このページを開くにはJavaScriptを有効にしてください。</p></noscript>
+<script>
+/* 舞子さん用の設定。PixivのURLが決まったら、空の "" の中に入れてください。 */
+const CONFIG = {
+ introLine: "He is still alive.",
+ introQuestion: "Do you believe it?",
+ noReply: "Are you sure?",
+ kiraNovelURL: "",
+ birthdayNovelURL: "",
+ kiraMemoTitle: "Case file",
+ kiraMemoLabel: "キラ事件の記録",
+ birthdayMemoTitle: "Birthday",
+ birthdayMemoLabel: "貴女と過ごした誕生日"
+};
+const entrance=document.querySelector('#entrance'), board=document.querySelector('#board');
+const notice=document.querySelector('#notice'), paths=document.querySelector('#thread-paths');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let entering=false,entered=false,frame;
+function safeExternalURL(value){try{if(!value.trim())return null;const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null;}catch{return null;}}
+document.querySelector('#alive-line').textContent=CONFIG.introLine;
+document.querySelector('#question-line').textContent=CONFIG.introQuestion;
+function setupNovel(id,url,title,label){
+ const a=document.querySelector('#'+id+'-link');
+ document.querySelector('#'+id+'-title').textContent=title;
+ document.querySelector('#'+id+'-label').textContent=label;
+ const target=safeExternalURL(url);
+ if(target){a.href=target;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label',label+'（Pixiv・別タブで開きます）');}
+ else{a.addEventListener('click',event=>{event.preventDefault();document.querySelector('#notice-title').textContent=title;document.querySelector('#notice-body').textContent='作品へのリンクは準備中です。';notice.showModal();});}
+}
+setupNovel('case',CONFIG.kiraNovelURL,CONFIG.kiraMemoTitle,CONFIG.kiraMemoLabel);
+setupNovel('birthday',CONFIG.birthdayNovelURL,CONFIG.birthdayMemoTitle,CONFIG.birthdayMemoLabel);
+document.querySelector('#notice-close').addEventListener('click',()=>notice.close());
+document.querySelector('#no').addEventListener('click',()=>{document.querySelector('#reply').textContent=CONFIG.noReply;});
+function rememberEntrance(){try{sessionStorage.setItem('l-board-entered','yes');}catch{}}
+function showBoard(animate){
+ entered=true;entering=false;entrance.hidden=true;board.hidden=false;rememberEntrance();
+ document.querySelector('meta[name="theme-color"]').content='#c6c6c3';
+ if(animate)board.classList.add('is-entering');
+ board.focus({preventScroll:true});scheduleThreads();
+ if(animate)setTimeout(()=>{board.classList.remove('is-entering');scheduleThreads();},1250);
+}
+document.querySelector('#yes').addEventListener('click',()=>{
+ if(entering||entered)return;entering=true;document.querySelector('#yes').disabled=true;
+ entrance.classList.add('is-leaving');
+ setTimeout(()=>{history.replaceState(null,'','#board');showBoard(true);},reduced.matches?0:600);
+});
+function drawThreads(){
+ if(board.hidden)return;const b=board.getBoundingClientRect();if(!b.width||!b.height)return;
+ document.querySelector('.threads').setAttribute('viewBox',`0 0 ${b.width} ${b.height}`);
+ const point=id=>{const r=document.querySelector(`[data-node="${id}"] .pin`).getBoundingClientRect();return{x:r.left+r.width/2-b.left,y:r.top+r.height/2-b.top};};
+ paths.replaceChildren();
+ for(const [from,to,red] of [['l','kira',false],['l','m',false],['l','n',false],['m','kira',false],['m','n',false],['l','reader',true]]){
+  const a=point(from),z=point(to),p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',`M ${a.x} ${a.y} Q ${(a.x+z.x)/2} ${(a.y+z.y)/2+5} ${z.x} ${z.y}`);p.setAttribute('class','thread'+(red?' red':''));paths.append(p);
+ }
+}
+function scheduleThreads(){cancelAnimationFrame(frame);frame=requestAnimationFrame(drawThreads);}
+new ResizeObserver(scheduleThreads).observe(board);
+window.addEventListener('resize',scheduleThreads);
+window.addEventListener('pageshow',scheduleThreads);
+board.addEventListener('animationend',scheduleThreads);
+document.fonts.ready.then(scheduleThreads);
+document.querySelectorAll('img').forEach(img=>img.addEventListener('load',scheduleThreads));
+/* ログ画面の「ボードへ戻る」からは、同じタブで通過済みなら入口を省略します。 */
+let returning=false;try{returning=location.hash==='#board'&&sessionStorage.getItem('l-board-entered')==='yes';}catch{}
+if(returning)showBoard(false);
+</script>
+</body>
+</html>

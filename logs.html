@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111111"><title>L / 10.31</title>
+<style>
+:root{color-scheme:dark;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}*{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100svh;background:radial-gradient(ellipse at 50% 0,#222,#0d0d0d 70%);color:#ddd;font-family:var(--mono)}a{color:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #ddd;outline-offset:5px}[hidden]{display:none!important}
+.computer{max-width:1060px;margin:0 auto;padding:36px 28px 80px;animation:power-on .65s both}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:34px;font-size:10px;letter-spacing:.15em;color:#aaa}.back{text-decoration:none;display:inline-block;padding:12px 0;min-height:44px}.back:hover{color:#fff}.identity{font-size:11px;color:#ddd}.window{border:1px solid #3c3c3c;background:#101010;box-shadow:0 20px 80px #0004}.window-bar{display:flex;gap:12px;align-items:center;min-height:44px;padding:12px 20px;background:#1a1a1a;border-bottom:1px solid #333;color:#aaa;font-size:10px;letter-spacing:.1em}.lights{display:flex;gap:5px}.lights i{width:6px;height:6px;background:#666;border-radius:50%;display:block}.archive-name{margin-left:auto;font-size:9px;color:#999}.shell{padding:26px 28px}.boot{color:#929292;font-size:11px;line-height:1.9;margin:0 0 26px;white-space:pre-line;min-height:64px}.cursor{display:inline-block;width:6px;height:12px;background:#aaa;vertical-align:middle;margin-left:6px;animation:blink 1.3s steps(1) infinite}.log-heading{font-size:10px;letter-spacing:.16em;border-top:1px solid #333;padding:22px 0 15px;color:#aaa;font-weight:normal;margin:0}.log-row{display:grid;grid-template-columns:105px 1fr;gap:24px;align-items:center;padding:10px 0;border-bottom:1px solid #252525}.time{background:none;border:0;border-bottom:1px solid #888;padding:12px 8px;text-align:left;min-height:44px;letter-spacing:.12em;font-size:13px;transition:background .2s,color .2s}.time:hover,.time[aria-pressed=true]{background:#ddd;color:#111}.summary{font-size:11px;line-height:1.7;color:#aaa}.hint{font-family:Georgia,'Yu Mincho',serif;font-size:12px;letter-spacing:.1em;line-height:1.9;color:#999;margin:20px 0 0}.record{padding:30px 0 0;scroll-margin-top:24px;outline:none}.record-header{display:flex;justify-content:space-between;gap:16px;font-size:9px;line-height:1.8;color:#999;border-bottom:1px solid #333;padding-bottom:15px}.record h2{font-family:Georgia,'Yu Mincho',serif;font-size:19px;font-weight:normal;line-height:1.9;margin:30px 0 24px;color:#eee}.story{font-family:'Yu Mincho','Hiragino Mincho ProN',Georgia,serif;font-size:15px;line-height:2.25;letter-spacing:.04em;white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd;max-width:720px;margin:0 auto}.related{display:block;width:fit-content;margin:34px 0 0;font-family:Georgia,'Yu Mincho',serif;font-size:12px;line-height:2;text-underline-offset:5px}.record-close{margin-top:28px;min-height:44px;padding:10px 15px;background:none;border:1px solid #555;font-size:10px;letter-spacing:.1em}.fade-record{animation:power-on .4s both}
+@keyframes blink{50%{opacity:0}}@keyframes power-on{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@media(max-width:600px){.computer{padding:18px 14px 50px}.top{margin-bottom:18px;font-size:9px}.identity{font-size:10px}.window-bar{padding:12px 14px}.shell{padding:22px 18px}.log-row{grid-template-columns:85px 1fr;gap:14px}.time{font-size:12px}.story{font-size:14px;line-height:2.2}.record-header{font-size:8px}.archive-name{font-size:8px}.record h2{font-size:18px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="computer">
+ <header class="top"><a class="back" href="./index.html#board">← ボードへ戻る</a><span class="identity">L / PRIVATE LOG</span></header>
+ <section class="window" aria-label="LのPCログ">
+  <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span>local archive</span><span class="archive-name" id="archive-date">10/31</span></div>
+  <div class="shell"><p class="boot"><span id="boot-text" aria-live="polite"></span><span class="cursor" aria-hidden="true"></span></p><h1 class="log-heading" id="log-heading">10/31 — activity log</h1><div id="log-rows"></div><p class="hint">時刻に触れると、その記録が開きます。</p>
+   <article class="record" id="record" hidden tabindex="-1" aria-labelledby="record-title"><div class="record-header"><span id="record-file"></span><span id="record-time"></span></div><h2 id="record-title"></h2><div class="story" id="record-body"></div><a class="related" id="related-novel" hidden>Reader側の記録を読む ↗</a><button class="record-close" id="record-close" type="button">CLOSE RECORD</button></article>
+  </div>
+ </section>
+</main>
+<noscript><p style="padding:24px">記録を開くにはJavaScriptを有効にしてください。</p></noscript>
+<script>
+/* 実際の時刻とL視点の本文は未提供のため、下の00:00は仮の時刻です。
+   bodyはバッククォートの間に文章を入れると、改行もそのまま表示します。
+   本文に ` を含める場合は \`、${ を含める場合は \${ と書いてください。 */
+const LOG_CONFIG = {
+ date: "10/31",
+ birthdayNovelURL: "",
+ entries: [
+  { id: "record-1", time: "00:00", summary: "private record", title: "10/31 — L", body: `` }
+ ]
+};
+const record=document.querySelector('#record'),rows=document.querySelector('#log-rows');
+let activeButton=null;
+function safeExternalURL(value){try{if(!value.trim())return null;const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null;}catch{return null;}}
+document.querySelector('#archive-date').textContent=LOG_CONFIG.date;
+document.querySelector('#log-heading').textContent=LOG_CONFIG.date+' — activity log';
+const relatedURL=safeExternalURL(LOG_CONFIG.birthdayNovelURL);
+if(relatedURL){const link=document.querySelector('#related-novel');link.href=relatedURL;link.target='_blank';link.rel='noopener noreferrer';link.hidden=false;}
+function openRecord(entry,button){
+ if(activeButton)activeButton.setAttribute('aria-pressed','false');activeButton=button;button.setAttribute('aria-pressed','true');
+ document.querySelector('#record-file').textContent=entry.id+'.txt';
+ document.querySelector('#record-time').textContent=LOG_CONFIG.date+' / '+entry.time;
+ document.querySelector('#record-title').textContent=entry.title;
+ document.querySelector('#record-body').textContent=entry.body.trim()||'この時刻の記録は、まだ入力されていません。';
+ record.hidden=false;record.classList.remove('fade-record');void record.offsetWidth;record.classList.add('fade-record');
+ history.replaceState(null,'','#'+encodeURIComponent(entry.id));record.focus({preventScroll:true});record.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}
+const entryButtons=new Map();
+for(const entry of LOG_CONFIG.entries){
+ const row=document.createElement('div');row.className='log-row';
+ const button=document.createElement('button');button.type='button';button.className='time';button.textContent=entry.time;button.setAttribute('aria-label',entry.time+'の記録を開く');button.setAttribute('aria-pressed','false');button.setAttribute('aria-controls','record');button.addEventListener('click',()=>openRecord(entry,button));
+ const summary=document.createElement('span');summary.className='summary';summary.textContent=entry.summary;row.append(button,summary);rows.append(row);entryButtons.set(entry.id,button);
+}
+document.querySelector('#record-close').addEventListener('click',()=>{record.hidden=true;history.replaceState(null,'',location.pathname+location.search);if(activeButton){activeButton.setAttribute('aria-pressed','false');activeButton.focus();}});
+let bootFrame=0;const bootLines=['Opening local archive…','Reading '+LOG_CONFIG.date+'…','Ready.'];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function nextBoot(){document.querySelector('#boot-text').textContent=bootLines.slice(0,++bootFrame).join('\n');if(bootFrame<bootLines.length)setTimeout(nextBoot,260);}
+if(reduced)document.querySelector('#boot-text').textContent=bootLines.join('\n');else nextBoot();
+let selected=null;try{const id=decodeURIComponent(location.hash.slice(1));selected=LOG_CONFIG.entries.find(entry=>entry.id===id);}catch{}
+if(selected)openRecord(selected,entryButtons.get(selected.id));
+</script>
+</body>
+</html>
