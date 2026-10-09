@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fafafa">
+<meta name="description" content="He is still alive.">
+<title>L</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light;--paper:#fafafa;--ink:#242424;--red:#b62836;--hand:Caveat,'Bradley Hand',Noteworthy,cursive;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#fafafa;color:var(--ink)}body{font-family:Georgia,'Yu Mincho',serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit}a{color:inherit}button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:6px}[hidden]{display:none!important}
+.credit{font:9px/1.8 var(--mono);letter-spacing:.06em;text-align:center;font-weight:400}
+.entrance{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:28px 24px 70px;background:#fafafa;color:#222;text-align:center;transition:opacity .6s,transform .6s}
+.entrance .credit{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:15px;right:15px;color:#777}
+.entrance.is-leaving{opacity:0;transform:scale(1.025);pointer-events:none}.entrance-inner{position:relative;z-index:2;width:100%;max-width:360px}.entrance-logo{display:block;width:210px;height:285px;margin:0 auto 10px;object-fit:contain;filter:grayscale(1);mix-blend-mode:multiply;animation:appear 1.5s both}
+.alive{font:11px var(--mono);letter-spacing:.19em;line-height:2;margin:0;animation:appear 1.2s .45s both}.question{font-size:15px;font-weight:normal;letter-spacing:.09em;margin:34px 0 23px;animation:appear 1.2s .8s both}.choices{display:flex;gap:30px;justify-content:center;animation:appear 1.2s 1s both}.choice{font:11px var(--mono);letter-spacing:.22em;background:none;color:#222;min-width:80px;min-height:44px;padding:12px 18px;border:1px solid #555;cursor:pointer;transition:background .2s,color .2s,transform .2s}.choice:hover{background:#222;color:#fff;transform:translateY(-2px)}.choice.no{border-color:#d8d8d8;color:#777}.choice.no:hover{color:#fff;background:#555}.choice:active{transform:translateY(0)}
+@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.board{position:relative;width:100%;height:100vh;height:100svh;min-height:780px;background:#282828;overflow:hidden;isolation:isolate;outline:none}
+.board:before{content:'';position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px),radial-gradient(ellipse at 50% 45%,#ffffff0b,transparent 74%);background-size:36px 36px,36px 36px,100% 100%}
+.board .credit{position:absolute;bottom:max(17px,env(safe-area-inset-bottom));left:15px;right:15px;color:#b8b8b8;z-index:7;pointer-events:none}
+.paper{position:absolute;z-index:3;background:var(--paper);border:1px solid #ffffffb3;border-radius:1px;box-shadow:0 2px 4px #0003,0 18px 32px #0005;transform:rotate(var(--angle,0deg));transform-origin:50% 12px}
+.pin{position:absolute;left:50%;top:7px;width:7px;height:7px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8e8e8,#737373 45%,#303030 85%);box-shadow:1px 2px 2px #0005;z-index:5}
+.logo-card{display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:11px 11px 31px;background:#fff;border-color:#f4f4f4;box-shadow:0 2px 3px #0003,0 24px 38px #0006}
+.photo-face{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f5f5f5;border:1px solid #e9e9e9}
+.logo-card img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;flex-shrink:0}
+.photo-caption{position:absolute;left:12px;bottom:10px;font:8px var(--mono);letter-spacing:.2em;color:#777}
+.subject{left:40%;top:33%;width:24%;height:46%;--angle:-1.7deg}.subject .photo-face img{width:145%;height:145%}
+.kira{left:32%;top:7%;width:14%;height:18%;--angle:2deg}.kira .photo-face{background:#050505;border-color:#050505}.kira img{mix-blend-mode:normal}
+.mello{left:13%;top:35%;width:14%;height:18%;--angle:-2.5deg}.near{left:12%;top:64%;width:14%;height:18%;--angle:1.5deg}
+.mello .photo-face img,.near .photo-face img{width:120%;height:120%}
+.reader-card{left:74%;top:56%;width:20%;height:21%;--angle:-3deg;display:flex;align-items:center;justify-content:center;padding:22px 14px;box-shadow:0 15px 28px #0004}
+.reader-name{font:500 clamp(38px,5vw,70px)/1.1 var(--hand);transform:rotate(-2deg)}
+.memo{z-index:6;text-align:left;text-decoration:none;display:block;padding:25px 21px 28px;cursor:pointer;background:#f8f8f7;box-shadow:0 5px 8px #0003,0 16px 28px #0006;transition:box-shadow .3s,filter .3s;animation:memo-float 4.8s ease-in-out infinite;animation-delay:var(--delay,0s)}
+.memo::after{content:'↗';position:absolute;right:11px;bottom:9px;width:22px;height:22px;text-align:center;border:1px solid #aaa;border-radius:50%;font:14px/20px var(--mono);color:#4f4f4f;transition:background .25s,color .25s}
+.memo::before{content:'';position:absolute;left:20px;right:43px;bottom:16px;height:1px;background:#d2d2d2}
+.memo:hover,.memo:focus-visible{box-shadow:0 10px 16px #0004,0 28px 46px #0007;filter:brightness(1.02)}
+.memo:hover::after,.memo:focus-visible::after{background:#222;color:white;border-color:#222}
+.memo:active{filter:brightness(.94);box-shadow:0 3px 8px #0005}
+.memo-title{display:block;font:400 clamp(27px,3vw,43px)/1.1 var(--hand);margin-bottom:8px}.memo-sub{display:block;font-size:12px;line-height:1.8;letter-spacing:.05em}
+.case-memo{left:53%;top:13%;width:27%;--angle:-2.3deg}.birthday-memo{left:74%;top:81%;width:22%;--angle:2deg;padding-top:20px;padding-bottom:29px}.birthday-memo .memo-title{font-size:32px}.date-memo{left:28%;top:81%;width:18%;--angle:-3deg}.date-memo .memo-title{font-size:45px;margin:0}.date-memo .memo-sub{font:13px var(--hand);letter-spacing:.08em;margin-top:5px}
+@keyframes memo-float{0%,100%{transform:translateY(0) rotate(var(--angle,0deg))}50%{transform:translateY(-4px) rotate(var(--angle,0deg))}}
+.threads{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}.thread{fill:none;stroke:#9b9b9b;stroke-width:1.05;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 1px #0005)}.thread.red{stroke:var(--red);stroke-width:2.2}
+.board.is-entering{animation:appear .8s both}.board.is-entering .paper{animation:attach .85s both;animation-delay:var(--delay,0s)}.board.is-entering .threads{animation:appear .8s .5s both}
+@keyframes attach{from{opacity:0;transform:translateY(10px) rotate(calc(var(--angle,0deg) - 2deg))}to{opacity:1;transform:translateY(0) rotate(var(--angle,0deg))}}
+dialog{width:min(460px,calc(100% - 40px));padding:32px;background:#fff;color:var(--ink);border:1px solid #ddd;box-shadow:0 24px 80px #0005}dialog::backdrop{background:#111b;backdrop-filter:blur(4px)}dialog h2{font:32px var(--hand);margin:0 0 18px}dialog p{font-size:14px;line-height:2;white-space:pre-line}.close{display:block;margin:24px 0 0 auto;min-height:44px;padding:10px 18px;border:1px solid #999;background:none;cursor:pointer}
+
+.signal-effects{position:fixed;inset:0;z-index:50;pointer-events:none;overflow:hidden;--scan-ink:0,0,0}
+.signal-lines{position:absolute;inset:-10px 0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(var(--scan-ink),.045) 3px,rgba(var(--scan-ink),.045) 4px);animation:scan-drift 16s linear infinite}
+.signal-noise{position:absolute;inset:-8%;opacity:.13;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Cpath fill='%23888' filter='url(%23n)' d='M0 0h200v200H0z'/%3E%3C/svg%3E");animation:signal-grain 1.6s steps(1,end) infinite}
+.signal-sweep{position:absolute;top:-24vh;left:0;width:100%;height:20vh;background:linear-gradient(transparent,rgba(var(--scan-ink),.035),transparent);border-bottom:1px solid rgba(var(--scan-ink),.07);animation:scan-sweep 13s linear infinite}
+@keyframes scan-drift{to{transform:translateY(8px)}}@keyframes signal-grain{0%,100%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}50%{transform:translate(1%,-1%)}75%{transform:translate(-1%,2%)}}@keyframes scan-sweep{to{transform:translateY(145vh)}}
+
+@media(max-width:760px){.board{min-height:840px}.subject{left:34%;top:36%;width:35%;height:35%}.kira{left:30%;top:6%;width:27%;height:14%}.mello{left:7%;top:29%;width:21%;height:14%}.near{left:6%;top:58%;width:21%;height:15%}.reader-card{left:71%;top:59%;width:26%;height:17%;padding:20px 7px}.reader-name{font-size:43px}.memo{padding:22px 13px 29px}.memo-title{font-size:31px}.memo-sub{font-size:11px;line-height:1.7}.case-memo{left:58%;top:23%;width:38%}.birthday-memo{left:61%;top:80%;width:35%;padding:22px 13px 29px}.birthday-memo .memo-title{font-size:31px}.date-memo{left:9%;top:79%;width:31%}.date-memo .memo-title{font-size:43px}.logo-card{padding:7px 7px 24px}.photo-caption{font-size:7px;left:8px;bottom:8px}.pin{width:6px;height:6px;top:5px}.thread{stroke-width:1}.thread.red{stroke-width:2}.credit{font-size:8px}.memo::before{left:12px}.memo::after{width:20px;height:20px;font-size:12px;line-height:18px}}
+@media(max-width:360px){.reader-name{font-size:36px}.memo-sub{font-size:10px}.case-memo .memo-title{font-size:28px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.entrance.is-leaving{transform:none}.signal-sweep{display:none}.signal-noise{opacity:.07}}
+
+</style>
+</head>
+<body>
+<div class="signal-effects" id="intro-signal" aria-hidden="true"><div class="signal-lines"></div><div class="signal-noise"></div><div class="signal-sweep"></div></div>
+<section class="entrance" id="entrance" aria-label="入口">
+ <div class="entrance-inner"><img class="entrance-logo" src="./l-logo.jpg" width="525" height="800" alt="L"><p class="alive" id="alive-line">He is still alive.</p><h1 class="question" id="question-line">Do you believe it?</h1><div class="choices"><button class="choice" id="yes" type="button">YES</button><button class="choice no" id="no" type="button">NO</button></div></div>
+ <footer class="credit">Fan fiction made by @uni_ikr</footer>
+</section>
+<main class="board" id="board" hidden tabindex="-1" aria-label="捜査ボード">
+ <section class="paper logo-card subject" data-node="l" aria-label="L"><i class="pin" aria-hidden="true"></i><div class="photo-face"><img src="./l-logo.jpg" width="525" height="800" alt="L"></div><span class="photo-caption">L</span></section>
+ <section class="paper logo-card kira" data-node="kira" style="--delay:.08s" aria-label="Kira"><i class="pin" aria-hidden="true"></i><div class="photo-face"><img src="./kira-logo.jpg" width="453" height="314" alt="Kira"></div><span class="photo-caption">Kira</span></section>
+ <section class="paper logo-card mello" data-node="m" style="--delay:.12s" aria-label="M"><i class="pin" aria-hidden="true"></i><div class="photo-face"><img src="./m-logo.jpg" width="428" height="296" alt="M"></div><span class="photo-caption">M</span></section>
+ <section class="paper logo-card near" data-node="n" style="--delay:.18s" aria-label="N"><i class="pin" aria-hidden="true"></i><div class="photo-face"><img src="./n-logo.jpg" width="1178" height="925" alt="N"></div><span class="photo-caption">N</span></section>
+ <section class="paper reader-card" data-node="reader" style="--delay:.22s" aria-label="Reader"><i class="pin" aria-hidden="true"></i><span class="reader-name">Reader</span></section>
+ <svg class="threads" aria-hidden="true"><g id="thread-paths"></g></svg>
+ <a class="paper memo case-memo" id="case-link" href="#" style="--delay:.15s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="case-title">Case file</span><span class="memo-sub" id="case-label">キラ事件の記録</span></a>
+ <a class="paper memo birthday-memo" id="birthday-link" href="#" style="--delay:.26s"><i class="pin" aria-hidden="true"></i><span class="memo-title" id="birthday-title">Birthday</span><span class="memo-sub" id="birthday-label">貴女と過ごした誕生日</span></a>
+ <a class="paper memo date-memo" href="./logs.html" style="--delay:.2s" aria-label="10月31日のLのPCログを開く"><i class="pin" aria-hidden="true"></i><span class="memo-title">10/31</span><span class="memo-sub">private log ↗</span></a>
+ <footer class="credit">Fan fiction made by @uni_ikr</footer>
+</main>
+<dialog id="notice" aria-labelledby="notice-title"><h2 id="notice-title"></h2><p id="notice-body"></p><button type="button" class="close" id="notice-close">閉じる</button></dialog>
+<noscript><p style="color:#222;text-align:center;padding:24px">このページを開くにはJavaScriptを有効にしてください。</p></noscript>
+<script>
+/* 舞子さん用の設定。PixivのURLが決まったら、空の "" の中に入れてください。 */
+const CONFIG = {
+ introLine: "He is still alive.",
+ introQuestion: "Do you believe it?",
+ kiraNovelURL: "",
+ birthdayNovelURL: "",
+ kiraMemoTitle: "Case file",
+ kiraMemoLabel: "キラ事件の記録",
+ birthdayMemoTitle: "Birthday",
+ birthdayMemoLabel: "貴女と過ごした誕生日"
+};
+const entrance=document.querySelector('#entrance'), board=document.querySelector('#board');
+const notice=document.querySelector('#notice'), paths=document.querySelector('#thread-paths');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let entering=false,entered=false,frame;
+function safeExternalURL(value){try{if(!value.trim())return null;const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null;}catch{return null;}}
+document.querySelector('#alive-line').textContent=CONFIG.introLine;
+document.querySelector('#question-line').textContent=CONFIG.introQuestion;
+function setupNovel(id,url,title,label){
+ const a=document.querySelector('#'+id+'-link');
+ document.querySelector('#'+id+'-title').textContent=title;
+ document.querySelector('#'+id+'-label').textContent=label;
+ const target=safeExternalURL(url);
+ if(target){a.href=target;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label',label+'（Pixiv・別タブで開きます）');}
+ else{a.addEventListener('click',event=>{event.preventDefault();document.querySelector('#notice-title').textContent=title;document.querySelector('#notice-body').textContent='作品へのリンクは準備中です。';notice.showModal();});}
+}
+setupNovel('case',CONFIG.kiraNovelURL,CONFIG.kiraMemoTitle,CONFIG.kiraMemoLabel);
+setupNovel('birthday',CONFIG.birthdayNovelURL,CONFIG.birthdayMemoTitle,CONFIG.birthdayMemoLabel);
+document.querySelector('#notice-close').addEventListener('click',()=>notice.close());
+document.querySelector('#no').addEventListener('click',()=>{location.assign('https://www.google.com/');});
+function rememberEntrance(){try{sessionStorage.setItem('l-board-entered','yes');}catch{}}
+function showBoard(animate){
+ entered=true;entering=false;entrance.hidden=true;board.hidden=false;document.querySelector('#intro-signal').hidden=true;rememberEntrance();
+ document.querySelector('meta[name="theme-color"]').content='#282828';
+ if(animate)board.classList.add('is-entering');
+ board.focus({preventScroll:true});scheduleThreads();
+ if(animate)setTimeout(()=>{board.classList.remove('is-entering');scheduleThreads();},1250);
+}
+document.querySelector('#yes').addEventListener('click',()=>{
+ if(entering||entered)return;entering=true;document.querySelector('#yes').disabled=true;
+ entrance.classList.add('is-leaving');
+ setTimeout(()=>{history.replaceState(null,'','#board');showBoard(true);},reduced.matches?0:600);
+});
+function drawThreads(){
+ if(board.hidden)return;const b=board.getBoundingClientRect();if(!b.width||!b.height)return;
+ document.querySelector('.threads').setAttribute('viewBox',`0 0 ${b.width} ${b.height}`);
+ const point=id=>{const r=document.querySelector(`[data-node="${id}"] .pin`).getBoundingClientRect();return{x:r.left+r.width/2-b.left,y:r.top+r.height/2-b.top};};
+ paths.replaceChildren();
+ for(const [from,to,red] of [['l','kira',false],['l','m',false],['l','n',false],['m','kira',false],['m','n',false],['l','reader',true]]){
+  const a=point(from),z=point(to),p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',`M ${a.x} ${a.y} Q ${(a.x+z.x)/2} ${(a.y+z.y)/2+5} ${z.x} ${z.y}`);p.setAttribute('class','thread'+(red?' red':''));paths.append(p);
+ }
+}
+function scheduleThreads(){cancelAnimationFrame(frame);frame=requestAnimationFrame(drawThreads);}
+new ResizeObserver(scheduleThreads).observe(board);
+window.addEventListener('resize',scheduleThreads);
+window.addEventListener('pageshow',scheduleThreads);
+board.addEventListener('animationend',scheduleThreads);
+document.fonts.ready.then(scheduleThreads);
+document.querySelectorAll('img').forEach(img=>img.addEventListener('load',scheduleThreads));
+/* ログ画面の「ボードへ戻る」からは、同じタブで通過済みなら入口を省略します。 */
+let returning=false;try{returning=location.hash==='#board'&&sessionStorage.getItem('l-board-entered')==='yes';}catch{}
+if(returning)showBoard(false);
+</script>
+</body>
+</html>
