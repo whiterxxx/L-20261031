@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ja">
-<!-- Revision: terminal-replay-20261013 / original prose -->
+<!-- Revision: terminal-paced-replay-20261013 / original prose -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -242,6 +242,7 @@ const LOG_CONFIG=JSON.parse(document.querySelector('#log-data').textContent);
 const record=document.querySelector('#record'),rows=document.querySelector('#log-rows'),entryButtons=new Map();
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const typingTargets=[],skip=document.querySelector('#skip-replay'),typingStatus=document.querySelector('#typing-status');
+const TYPE_SPEED={character:26,linePause:230,recordPause:430};
 let activeIndex=-1,activeButton=null,typingIndex=0,typingOffset=0,typingTimer=null,replayDone=false,replayPaused=false;
 function safeExternalURL(value){try{const u=new URL(value);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
 document.querySelector('#archive-date').textContent=LOG_CONFIG.date;
@@ -252,19 +253,26 @@ if(relatedURL){const a=document.querySelector('#related-novel');a.href=relatedUR
 function stopTypingTimer(){if(typingTimer!==null){clearTimeout(typingTimer);typingTimer=null;}}
 function finishReplay(){
  stopTypingTimer();replayDone=true;
- for(const target of typingTargets){target.element.textContent=target.text;target.element.classList.remove('typing-active');}
+ for(const target of typingTargets){if(target.row)target.row.hidden=false;target.element.textContent=target.text;target.element.classList.remove('typing-active');}
  skip.disabled=true;typingStatus.textContent='ARCHIVE READY / '+LOG_CONFIG.entries.length+' RECORDS';
 }
 function tickReplay(){
  typingTimer=null;if(replayDone||replayPaused)return;
  if(typingIndex>=typingTargets.length){finishReplay();return;}
- const target=typingTargets[typingIndex];target.element.classList.add('typing-active');
- typingOffset=Math.min(typingOffset+6,target.text.length);target.element.textContent=target.text.slice(0,typingOffset);
- if(typingOffset>=target.text.length){target.element.classList.remove('typing-active');typingIndex++;typingOffset=0;}
- typingTimer=setTimeout(tickReplay,18);
+ const target=typingTargets[typingIndex];if(target.row)target.row.hidden=false;target.element.classList.add('typing-active');
+ typingOffset=Math.min(typingOffset+1,target.text.length);target.element.textContent=target.text.slice(0,typingOffset);
+ let delay=TYPE_SPEED.character+[0,5,-3,8][typingOffset%4];
+ const character=target.text.charAt(typingOffset-1);
+ if(character==='\n')delay=140;else if(/[.,:;!?]/.test(character))delay+=65;
+ if(typingOffset>=target.text.length){
+  target.element.classList.remove('typing-active');
+  delay=target.text.startsWith('LOCAL |')?TYPE_SPEED.recordPause:TYPE_SPEED.linePause;
+  typingIndex++;typingOffset=0;
+ }
+ typingTimer=setTimeout(tickReplay,delay);
 }
 function pauseReplay(){replayPaused=true;stopTypingTimer();}
-function resumeReplay(){replayPaused=false;if(!replayDone&&typingTimer===null)typingTimer=setTimeout(tickReplay,18);}
+function resumeReplay(){replayPaused=false;if(!replayDone&&typingTimer===null)typingTimer=setTimeout(tickReplay,TYPE_SPEED.character);}
 function releaseRecord(){
  document.body.classList.remove('modal-open');
  if(activeButton){activeButton.setAttribute('aria-pressed','false');activeButton.focus({preventScroll:true});}
@@ -298,7 +306,7 @@ function closeRecord(updateHistory){
 }
 typingTargets.push({element:document.querySelector('#boot-text'),text:'Opening local archive...\n31 OCT 2026 / TEMPORARY L SESSION\nReplaying case and local activity...'});
 for(let index=0;index<LOG_CONFIG.entries.length;index++){
- const entry=LOG_CONFIG.entries[index],row=document.createElement('div');row.className='log-row';
+ const entry=LOG_CONFIG.entries[index],row=document.createElement('div');row.className='log-row';row.hidden=true;
  const button=document.createElement('button');button.className='time';button.type='button';
  const time=document.createElement('span');time.textContent=entry.time;button.append(time);
  button.setAttribute('aria-label',entry.time+'の小説ウィンドウを開く');button.setAttribute('aria-pressed','false');button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','record');button.addEventListener('click',function(){openRecord(index,true);});
@@ -308,7 +316,7 @@ for(let index=0;index<LOG_CONFIG.entries.length;index++){
   const ghost=document.createElement('span');ghost.className='layout-text';ghost.textContent=text;ghost.setAttribute('aria-hidden','true');
   const typed=document.createElement('span');typed.className='typed-line';typed.setAttribute('aria-hidden','true');
   const accessible=document.createElement('span');accessible.className='sr-only';accessible.textContent=text;
-  line.append(ghost,typed,accessible);summary.append(line);typingTargets.push({element:typed,text:text});
+  line.append(ghost,typed,accessible);summary.append(line);typingTargets.push({element:typed,text:text,row:row});
  }
  const arrow=document.createElement('span');arrow.className='row-arrow';arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
  row.append(button,summary,arrow);rows.append(row);entryButtons.set(entry.id,button);
@@ -320,7 +328,7 @@ record.addEventListener('cancel',function(event){event.preventDefault();closeRec
 record.addEventListener('close',releaseRecord);
 document.querySelector('#previous-record').addEventListener('click',function(){if(activeIndex>0)openRecord(activeIndex-1,true);});
 document.querySelector('#next-record').addEventListener('click',function(){if(activeIndex<LOG_CONFIG.entries.length-1)openRecord(activeIndex+1,true);});
-function restoreHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}const index=LOG_CONFIG.entries.findIndex(function(entry){return entry.id===id;});if(index>=0)openRecord(index,false);else if(record.open)closeRecord(false);}
+function restoreHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}const index=LOG_CONFIG.entries.findIndex(function(entry){return entry.id===id;});if(index>=0){if(rows.children[index].hidden)finishReplay();openRecord(index,false);}else if(record.open)closeRecord(false);}
 window.addEventListener('popstate',restoreHash);window.addEventListener('hashchange',restoreHash);
 if(reduced)finishReplay();else tickReplay();
 restoreHash();
