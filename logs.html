@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ja">
-<!-- Revision: original-secret-log-20261012 / typo corrections only -->
+<!-- Revision: terminal-replay-20261013 / original prose -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -37,6 +37,23 @@
 .fade-record{animation:appear .3s both}@keyframes appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes blink{50%{opacity:0}}@keyframes scan-drift{to{transform:translateY(8px)}}@keyframes grain{25%{transform:translate(-2%,1%)}50%{transform:translate(1%,-1%)}75%{transform:translate(-1%,2%)}}@keyframes scan-sweep{to{transform:translateY(145vh)}}
 @media(max-width:600px){.computer{padding:14px 12px 32px}.top{font-size:9px;margin-bottom:12px}.window-bar{padding:12px}.archive-name{font-size:8px}.shell{padding:22px 17px 25px}.log-row{grid-template-columns:73px 1fr 14px;gap:12px}.time{font-size:12px;min-height:52px}.summary{font-size:9px;letter-spacing:.035em}.story{font-size:15px;line-height:2.15;letter-spacing:.025em}.record h2{font-size:20px}.record-header{font-size:8px}.record-navigation{gap:9px}.nav-button{padding:9px 8px;font-size:9px}.entry-count{font-size:8px}.archive-heading h1{font-size:10px}.credit{font-size:8px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.signal-sweep{display:none}.signal-noise{opacity:.02}}
+
+/* Archive replay and a separate, scrollable document window. */
+.replay-controls{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#111315f5;border-bottom:1px solid #353739;padding:8px 0;margin:0 0 18px;backdrop-filter:blur(10px)}
+.replay-status{font:9px/1.8 var(--mono);letter-spacing:.08em;color:#999}.skip{min-height:44px;padding:10px 16px;border:1px solid #555;background:none;color:#ddd;font:10px var(--mono);letter-spacing:.1em;white-space:nowrap}.skip:hover:not(:disabled){background:#ddd;color:#111}.skip:disabled{opacity:.3;cursor:default}
+.log-row{align-items:start;padding:12px 0;gap:16px}.time{min-height:46px}.summary{font:10px/1.85 var(--mono);letter-spacing:.01em;color:#abb0b3;min-width:0}.row-arrow{padding-top:13px}
+.log-line{position:relative;margin:0 0 4px;overflow-wrap:anywhere}.layout-text{visibility:hidden;display:block;white-space:pre-wrap}.typed-line{position:absolute;inset:0;display:block;white-space:pre-wrap}.typing-active::after{content:'';display:inline-block;width:5px;height:10px;background:#a8afb3;vertical-align:baseline;margin-left:3px;animation:blink .9s steps(1) infinite}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+body.modal-open{overflow:hidden}
+dialog.record{position:fixed;inset:0;margin:auto;padding:0;width:min(760px,calc(100% - 28px));height:auto;max-height:calc(100vh - 38px);max-height:calc(100svh - 38px);border:1px solid #686d72;color:#ddd;background:#16191c;box-shadow:0 30px 110px #000b;overflow:hidden}
+dialog.record:not([open]){display:none}dialog.record[open]{display:flex;flex-direction:column}dialog.record::backdrop{background:#050608cc;backdrop-filter:blur(5px)}
+.record-toolbar{position:relative;top:auto;flex:none;z-index:1;min-height:50px;margin:0;padding:5px 8px 5px 18px;background:#25292d;border-bottom:1px solid #4d5359;backdrop-filter:none}
+.record-window-name{font:10px/1.6 var(--mono);letter-spacing:.05em;overflow-wrap:anywhere}.record-window-actions{display:flex;align-items:center;gap:14px}.record-count{font:9px var(--mono)}
+.window-close{display:grid;place-items:center;flex:none;min-width:44px;min-height:44px;padding:0;border:0;background:transparent;color:#dfe1e3;font:26px/1 Georgia,serif;cursor:pointer}.window-close:hover{background:#3b4045;color:#fff}
+.record-scroll{padding:27px 30px 30px;overflow-y:auto;min-height:0;overscroll-behavior:contain;scrollbar-color:#535960 #17191c;-webkit-overflow-scrolling:touch}
+.record h2{margin:20px auto 26px}.record-navigation{margin-top:30px}.record-navigation .text-button{font-family:var(--serif);font-size:12px}.record .nav-button{font-family:var(--serif);font-size:12px}
+@media(max-width:600px){.replay-controls{gap:8px}.replay-status{font-size:8px}.skip{padding:10px 12px}.log-row{grid-template-columns:65px 1fr 12px;gap:9px}.summary{font-size:9px;line-height:1.85}dialog.record{width:calc(100% - 20px);max-height:calc(100svh - 24px)}.record-toolbar{padding-left:14px}.record-window-name{font-size:9px}.record-window-actions{gap:8px}.record-scroll{padding:22px 19px 24px}.record-count{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.typing-active::after{animation:none}}
 </style>
 </head>
 <body>
@@ -47,21 +64,25 @@
 <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span>local / personal archive</span><span class="archive-name" id="archive-date">31 OCT 2026</span></div>
 <div class="shell">
 <section id="archive-panel" aria-labelledby="log-heading">
-<p class="boot"><span id="boot-text" aria-live="polite"></span><span class="cursor" aria-hidden="true"></span></p>
+<div class="replay-controls"><span class="replay-status" id="typing-status" aria-live="polite">REPLAYING ARCHIVE...</span><button class="skip" id="skip-replay" type="button" aria-label="ログの演出を省略して全て表示する">SKIP</button></div>
+<p class="boot"><span id="boot-text"></span><span class="cursor" aria-hidden="true"></span></p>
 <div class="archive-heading"><h1 id="log-heading">10/31 — ACTIVITY LOG</h1><span class="entry-count" id="entry-count"></span></div>
 <div id="log-rows"></div><p class="hint">時刻に触れると、その時のLの記録が開きます。</p>
 </section>
-<article class="record" id="record" hidden tabindex="-1" aria-labelledby="record-title">
-<div class="record-toolbar"><button class="text-button" id="record-close" type="button">← 時刻一覧</button><span class="record-count" id="record-count"></span></div>
-<div class="record-header"><span id="record-file"></span><span id="record-time"></span></div>
-<h2 id="record-title"></h2><div class="story" id="record-body"></div>
-<a class="related" id="related-novel" hidden>Trick or Treat — Reader側の記録を読む ↗</a>
-<nav class="record-navigation" aria-label="前後の記録"><button class="nav-button" id="previous-record" type="button"></button><button class="text-button" id="record-list" type="button">一覧</button><button class="nav-button" id="next-record" type="button"></button></nav>
-<p class="end-note" id="end-note" hidden>END OF SESSION / 01 NOV 2026</p>
-</article>
+
 </div>
 </section>
 </main>
+<dialog class="record" id="record" aria-labelledby="record-title">
+<div class="record-toolbar"><span class="record-window-name" id="record-window-name">personal record</span><div class="record-window-actions"><span class="record-count" id="record-count"></span><button class="window-close" id="record-close" type="button" aria-label="小説ウィンドウを閉じる" autofocus>×</button></div></div>
+<div class="record-scroll" id="record-scroll">
+<div class="record-header"><span id="record-file"></span><span id="record-time"></span></div>
+<h2 id="record-title"></h2><div class="story" id="record-body"></div>
+<a class="related" id="related-novel" hidden>Trick or Treat — Reader側の記録を読む ↗</a>
+<nav class="record-navigation" aria-label="前後の記録"><button class="nav-button" id="previous-record" type="button"></button><button class="text-button" id="record-list" type="button">閉じる</button><button class="nav-button" id="next-record" type="button"></button></nav>
+<p class="end-note" id="end-note" hidden>END OF SESSION / 01 NOV 2026</p>
+</div>
+</dialog>
 <footer class="credit">Fan fiction made by @uni_ikr</footer>
 <noscript><p style="padding:24px">本文を読むにはJavaScriptを有効にしてください。</p></noscript>
 <script id="log-data" type="application/json">{
@@ -74,113 +95,187 @@
       "time": "10:00",
       "summary": "ROLE ASSIGNED",
       "title": "10:00 — L",
-      "body": "後継者からの連絡を読み終えた時、悪くない取引だと思った。\n実行日が今日である理由は、犯人が最後の送金を今夜に予定しているからだ。それだけ、と言えば嘘になるのかもしれない。\nモニターには、私がかつて世界と向き合っていた頃と同じように \"L\" の文字が映っている。その座に在る者が交代して随分経つが、今日一日だけ、私はあの座へと戻る。後継者がわざわざ私を指名したのは、只のダミーではなく \"L\" を遂行できる者である必要があったからだろう。\n「対価を寄越さないならば、その座を利用して悪戯してやる」と伝えた。冗談の形をしているが、これは本気だ。聡い後継者にもそれは伝わっている。\n\nキッチンからは何かを刻む音が聞こえ始めた。冷たいバターをカットしているのだろう。「死」によって表舞台から去った人間が、今日だけ生者の仮面を被り世界の前に出る。イレギュラーな事態ではあるが、この部屋の中で起こることはいつもと変わらない。私の守りたい者が、この空間に共に在る。"
+      "body": "後継者からの連絡を読み終えた時、悪くない取引だと思った。\n実行日が今日である理由は、犯人が最後の送金を今夜に予定しているからだ。それだけ、と言えば嘘になるのかもしれない。\nモニターには、私がかつて世界と向き合っていた頃と同じように \"L\" の文字が映っている。その座に在る者が交代して随分経つが、今日一日だけ、私はあの座へと戻る。後継者がわざわざ私を指名したのは、只のダミーではなく \"L\" を遂行できる者である必要があったからだろう。\n「対価を寄越さないならば、その座を利用して悪戯してやる」と伝えた。冗談の形をしているが、これは本気だ。聡い後継者にもそれは伝わっている。\n\nキッチンからは何かを刻む音が聞こえ始めた。冷たいバターをカットしているのだろう。「死」によって表舞台から去った人間が、今日だけ生者の仮面を被り世界の前に出る。イレギュラーな事態ではあるが、この部屋の中で起こることはいつもと変わらない。私の守りたい者が、この空間に共に在る。",
+      "eventLines": [
+        "CASE | Temporary L authority accepted; successor channel connected.",
+        "LOCAL | Kitchen activity detected: butter preparation."
+      ]
     },
     {
       "id": "log-1120",
       "time": "11:20",
       "summary": "IDENTITIES MATCHED",
       "title": "11:20 — L",
-      "body": "三十七人……その全員が死んでいて、彼ら全員が現在も口座の金を動かしていることになっている。半年前にこの事件の一本の細い糸を見つけてから、ここまでの規模になるとは正直予想を超えていた。\n\nマカロンを二つ重ねて齧った。今はとにかく糖分が必要だ。\n\n彼女に「死んだ者の名前はそんなに使いやすいのか」と訊かれた。訊いてから後悔したであろうことが、声のトーンに滲んでいた。\n死者の名は使いやすい。死んだ者は誰も探さないし、本人が声を上げることもない。そう答えた。それは紛れもない事実だ。\n\nこの部屋には死んだ人間のために毎日紅茶を淹れる人間が一人いる。いつも手の届く場所にいて、私のために世話を焼く。これまでも、これからも、ずっと。"
+      "body": "三十七人……その全員が死んでいて、彼ら全員が現在も口座の金を動かしていることになっている。半年前にこの事件の一本の細い糸を見つけてから、ここまでの規模になるとは正直予想を超えていた。\n\nマカロンを二つ重ねて齧った。今はとにかく糖分が必要だ。\n\n彼女に「死んだ者の名前はそんなに使いやすいのか」と訊かれた。訊いてから後悔したであろうことが、声のトーンに滲んでいた。\n死者の名は使いやすい。死んだ者は誰も探さないし、本人が声を上げることもない。そう答えた。それは紛れもない事実だ。\n\nこの部屋には死んだ人間のために毎日紅茶を淹れる人間が一人いる。いつも手の届く場所にいて、私のために世話を焼く。これまでも、これからも、ずっと。",
+      "eventLines": [
+        "CASE | 37 deceased identities matched to active bank accounts.",
+        "LOCAL | Macarons consumed; tea refilled."
+      ]
     },
     {
       "id": "log-1300",
       "time": "13:00",
       "summary": "EXTERNAL CHANNEL",
       "title": "13:00 — L",
-      "body": "データ化された私の声は何重にもエフェクトを通り、ノイズ加工されて世界の切り札の声として出ていく。画面の向こうにいる者は、誰も加工される前の私を知らない。それでいい。\n加工される前の声を聞いているのは、この部屋の一人だけだ。\n\n肘の横に皿が置かれた。中身を確かめずに一切れ齧った。余裕がなかったからではない。彼女が置いた皿だからだ。信頼の証拠であり、長い時をかけて習慣化されたものでもある。\n背中に視線を感じた。そういえば昔の彼女も、こんな風に私を見ていた。仕事の邪魔をしないようにという気遣いだったのだろうが、あの頃も私はその視線に気が付いてきたし、そのいじらしい姿をしっかりと記憶している。"
+      "body": "データ化された私の声は何重にもエフェクトを通り、ノイズ加工されて世界の切り札の声として出ていく。画面の向こうにいる者は、誰も加工される前の私を知らない。それでいい。\n加工される前の声を聞いているのは、この部屋の一人だけだ。\n\n肘の横に皿が置かれた。中身を確かめずに一切れ齧った。余裕がなかったからではない。彼女が置いた皿だからだ。信頼の証拠であり、長い時をかけて習慣化されたものでもある。\n背中に視線を感じた。そういえば昔の彼女も、こんな風に私を見ていた。仕事の邪魔をしないようにという気遣いだったのだろうが、あの頃も私はその視線に気が付いてきたし、そのいじらしい姿をしっかりと記憶している。",
+      "eventLines": [
+        "CASE | External briefing opened; fourth transfer route identified as a decoy.",
+        "LOCAL | Fruit sandwiches received; unprocessed voice audible in the room."
+      ]
     },
     {
       "id": "log-1440",
       "time": "14:40",
       "summary": "VOICE RECOGNIZED",
       "title": "14:40 — L",
-      "body": "昔のLのような話し方をする、と言われた。\n\nLは一人だ。嘘ではない。私も後継者も、同じ一つの仮面を被ったに過ぎない。世界に見せている顔は一つしかない。以前も、現在も。\n死んだはずの者が、生者の世界にちょっかいをかけたら向こうから一瞬だけ「私」を見る者と目が合った。私の話し方を今も覚えている人間がいる。それで十分だ。それ以上のことは、何も考えないことにする。"
+      "body": "昔のLのような話し方をする、と言われた。\n\nLは一人だ。嘘ではない。私も後継者も、同じ一つの仮面を被ったに過ぎない。世界に見せている顔は一つしかない。以前も、現在も。\n死んだはずの者が、生者の世界にちょっかいをかけたら向こうから一瞬だけ「私」を見る者と目が合った。私の話し方を今も覚えている人間がいる。それで十分だ。それ以上のことは、何も考えないことにする。",
+      "eventLines": [
+        "CASE | Japanese police channel: former colleague recognizes speech pattern.",
+        "LOCAL | Reply recorded: \"L is one. Then and now.\""
+      ]
     },
     {
       "id": "log-1520",
       "time": "15:20",
       "summary": "ALIAS FOUND",
       "title": "15:20 — L",
-      "body": "二十三番目の行に、私の名前がある。昔に使って、誰にも渡さないまま埃を被っていたはずの名前。\n彼女が近づいてくる気配がしたので、画面を切り替えて隠した。その動作は彼女には不自然に見えただろうし、実際に誤魔化し以外の何でもない。\nただ、死亡者という文字の隣に私がかつて使用していた名前が並ぶ画面を、彼女に見せたくなかった。\n\n彼女は何も見なかったふりをして、空のカップを新しいものと替えようとした。その手首を掴んだ。考えるより先に手が出ていた。\n傍に居るように伝え、椅子の横の床に座らせた。\n彼女の髪に指を差し入れて、その存在を確かめた。私の名前が他人の手で勝手に歩き回っている今、私のものがちゃんと私の手の届くところにあることを。\nパイの焼ける匂いが部屋を満たすまで、彼女をキッチンに返すことはしなかった。"
+      "body": "二十三番目の行に、私の名前がある。昔に使って、誰にも渡さないまま埃を被っていたはずの名前。\n彼女が近づいてくる気配がしたので、画面を切り替えて隠した。その動作は彼女には不自然に見えただろうし、実際に誤魔化し以外の何でもない。\nただ、死亡者という文字の隣に私がかつて使用していた名前が並ぶ画面を、彼女に見せたくなかった。\n\n彼女は何も見なかったふりをして、空のカップを新しいものと替えようとした。その手首を掴んだ。考えるより先に手が出ていた。\n傍に居るように伝え、椅子の横の床に座らせた。\n彼女の髪に指を差し入れて、その存在を確かめた。私の名前が他人の手で勝手に歩き回っている今、私のものがちゃんと私の手の届くところにあることを。\nパイの焼ける匂いが部屋を満たすまで、彼女をキッチンに返すことはしなかった。",
+      "eventLines": [
+        "CASE | Former alias located in deceased-account list, row 23.",
+        "LOCAL | Display switched; companion asked to remain beside the chair."
+      ]
     },
     {
       "id": "log-1610",
       "time": "16:10",
       "summary": "OWNER PRESENT",
       "title": "16:10 — L",
-      "body": "彼女の持つ木べらから摘み食いをした。熱いことは理解しているが、それでも手は出る。甘いものと彼女の手元にあるものには、そうせずにいられない。\n何故この事件を追っていたのか、と訊かれた。朝から訊きたそうにしていたのを、ここまで我慢していたのも知っている。\n私の名前や肩書きの全てが後継者に渡ったわけではない。渡さなかったものは、私が最後まで持っていく、あるいは全てこの手で消すはずだった。それを誰かが墓から掘り出して、空き家だと思って住み着いた。\nそれは持ち主不在の物件ではない。持ち主は、ここに生きている。\nそう言うと、彼女の目に涙が滲んだ。泣かせるつもりはなかったが、私のことで泣きそうな顔をしているという事実は悪くなかった。\n彼女は誤魔化すようにりんごを並べはじめた。円を描いて、一切れずつ花弁のように。手を伸ばして、甘そうに煮込まれたそれを一切れ取った。\n咎められることはなかった。咎められないことを知っていて取るのは、盗むうちに入らないのかもしれない。"
+      "body": "彼女の持つ木べらから摘み食いをした。熱いことは理解しているが、それでも手は出る。甘いものと彼女の手元にあるものには、そうせずにいられない。\n何故この事件を追っていたのか、と訊かれた。朝から訊きたそうにしていたのを、ここまで我慢していたのも知っている。\n私の名前や肩書きの全てが後継者に渡ったわけではない。渡さなかったものは、私が最後まで持っていく、あるいは全てこの手で消すはずだった。それを誰かが墓から掘り出して、空き家だと思って住み着いた。\nそれは持ち主不在の物件ではない。持ち主は、ここに生きている。\nそう言うと、彼女の目に涙が滲んだ。泣かせるつもりはなかったが、私のことで泣きそうな顔をしているという事実は悪くなかった。\n彼女は誤魔化すようにりんごを並べはじめた。円を描いて、一切れずつ花弁のように。手を伸ばして、甘そうに煮込まれたそれを一切れ取った。\n咎められることはなかった。咎められないことを知っていて取るのは、盗むうちに入らないのかもしれない。",
+      "eventLines": [
+        "CASE | Unauthorized use of retained alias confirmed.",
+        "LOCAL | Kitchen conversation: \"The owner is alive, here.\""
+      ]
     },
     {
       "id": "log-1745",
       "time": "17:45",
       "summary": "LIGHT PLACED",
       "title": "17:45 — L",
-      "body": "彼女がカボチャの皮に顔を彫っていた。ランタンを作るのだろう。三角の目を開けたあと、刃先がその下で一度止まって、迷うようにしてから離れた。\nそこに何を足そうとしたのかはわかる。足していれば、魔除けとしてはさぞ効いただろう。\n\nテーブルに完成したランタンの灯りが置かれた。天国にも地獄にも行けなかった男の灯り。いつだったか、私が彼女に話したランタンの由来だ。\n気づけば、私はモニターの青とランタンの灯りの両方に挟まれていた。\nランタンは霊に帰り道を教える道標でもある。彼女はそれを見ながら、いつかどちらかが死ぬ日のことを考えているのだろう。顔に全部書いてある。\n私に道標は要らない。灯りを頼りにするのは、行き先を知らない者だけだ。私は彼女の居場所を知っている。生きていても、死んでいても、それは変わらない。"
+      "body": "彼女がカボチャの皮に顔を彫っていた。ランタンを作るのだろう。三角の目を開けたあと、刃先がその下で一度止まって、迷うようにしてから離れた。\nそこに何を足そうとしたのかはわかる。足していれば、魔除けとしてはさぞ効いただろう。\n\nテーブルに完成したランタンの灯りが置かれた。天国にも地獄にも行けなかった男の灯り。いつだったか、私が彼女に話したランタンの由来だ。\n気づけば、私はモニターの青とランタンの灯りの両方に挟まれていた。\nランタンは霊に帰り道を教える道標でもある。彼女はそれを見ながら、いつかどちらかが死ぬ日のことを考えているのだろう。顔に全部書いてある。\n私に道標は要らない。灯りを頼りにするのは、行き先を知らない者だけだ。私は彼女の居場所を知っている。生きていても、死んでいても、それは変わらない。",
+      "eventLines": [
+        "CASE | Transfer monitoring continues.",
+        "LOCAL | Pumpkin lantern placed between the work area and the room."
+      ]
     },
     {
       "id": "log-1905",
       "time": "19:05",
       "summary": "GIFT RECEIVED",
       "title": "19:05 — L",
-      "body": "この家に客は来ない。来ないように選んだ場所だ。もし呼び鈴が鳴れば、まずカメラで何者かを確かめる。\n彼女は仮装した子供の正体を確かめなかった。誰が入っていても、お菓子はあげるのだと言った。\nそれは正しいだろう。子どもに菓子を渡すのに、身元の確認は必要ない。\nそれでも一瞬、面白くなかった。誰にでも同じように甘いものを差し出せるのだと、目の前で見せつけられた気がした。\n彼女の持つ籠から一つ取って口に入れてから、私にもください、と要求した。勝手に取るのと、彼女から貰うのは違う。今日の私は他人のものを借りて世界と向き合っている。自分だけに向けて差し出されたものが、一つくらい欲しかった。\n\n「どうぞ、私のオバケさん」\n\n死んだことになっている男に、これ以上正確な呼び名はない。しかも、その前に「私の」がついていた。それで充分だ。\n手のひらのキャンディには、まだ彼女の指の温度が残っていた。大切に握りこんで、リビングに戻った。"
+      "body": "この家に客は来ない。来ないように選んだ場所だ。もし呼び鈴が鳴れば、まずカメラで何者かを確かめる。\n彼女は仮装した子供の正体を確かめなかった。誰が入っていても、お菓子はあげるのだと言った。\nそれは正しいだろう。子どもに菓子を渡すのに、身元の確認は必要ない。\nそれでも一瞬、面白くなかった。誰にでも同じように甘いものを差し出せるのだと、目の前で見せつけられた気がした。\n彼女の持つ籠から一つ取って口に入れてから、私にもください、と要求した。勝手に取るのと、彼女から貰うのは違う。今日の私は他人のものを借りて世界と向き合っている。自分だけに向けて差し出されたものが、一つくらい欲しかった。\n\n「どうぞ、私のオバケさん」\n\n死んだことになっている男に、これ以上正確な呼び名はない。しかも、その前に「私の」がついていた。それで充分だ。\n手のひらのキャンディには、まだ彼女の指の温度が残っていた。大切に握りこんで、リビングに戻った。",
+      "eventLines": [
+        "CASE | Door camera checked; costumed children at the entrance.",
+        "LOCAL | Candy received by hand. Item retained."
+      ]
     },
     {
       "id": "log-2015",
       "time": "20:15",
       "summary": "AWAITING TRANSFER",
       "title": "20:15 — L",
-      "body": "キッチンでオーブンのダイヤルが回る音がした。\n集中が深くなると、世界から音が一つずつ失われていく。自分でもそれを理解している。だが、失われる音の中で、彼女の気配まで見失うのは心理的な抵抗感がある。\nだから、この事件が終わるまで傍に居るように言った。傍に居るよう告げるのは今日二度目だ。\n彼女はソファの端で膝を抱えた。私と同じ座り方になっていることに気付いた。そのままの姿勢でこちらを見守る私のクイーン。その姿を、視界の端でずっと捉えていた。"
+      "body": "キッチンでオーブンのダイヤルが回る音がした。\n集中が深くなると、世界から音が一つずつ失われていく。自分でもそれを理解している。だが、失われる音の中で、彼女の気配まで見失うのは心理的な抵抗感がある。\nだから、この事件が終わるまで傍に居るように言った。傍に居るよう告げるのは今日二度目だ。\n彼女はソファの端で膝を抱えた。私と同じ座り方になっていることに気付いた。そのままの姿勢でこちらを見守る私のクイーン。その姿を、視界の端でずっと捉えていた。",
+      "eventLines": [
+        "CASE | Final transfer expected in 45 minutes.",
+        "LOCAL | Oven timer set; companion remains within sight."
+      ]
     },
     {
       "id": "log-2100",
       "time": "21:00",
       "summary": "OPERATION CLOSED",
       "title": "21:00 — L",
-      "body": "赤に変わっていく数字。各国で、各時刻で、同時に動きがあった。\nスピーカーの声とオーブンのタイマーが重なった。それは事件の終わりを告げる音声であり、今夜の始まりを告げる電子音だった。\n確保しました、と口にしてから息を吐いた。\n犯人確保を確認してモニターの電源を一枚ずつ落としていく。最後の一枚に、馴染みのあるロゴが残った。\nこのロゴが示す存在の代理として、私の任は終わりを迎えた。"
+      "body": "赤に変わっていく数字。各国で、各時刻で、同時に動きがあった。\nスピーカーの声とオーブンのタイマーが重なった。それは事件の終わりを告げる音声であり、今夜の始まりを告げる電子音だった。\n確保しました、と口にしてから息を吐いた。\n犯人確保を確認してモニターの電源を一枚ずつ落としていく。最後の一枚に、馴染みのあるロゴが残った。\nこのロゴが示す存在の代理として、私の任は終わりを迎えた。",
+      "eventLines": [
+        "CASE | Final transfer detected; connected routes frozen. Suspect secured.",
+        "LOCAL | Oven timer sounds; work displays shut down one by one."
+      ]
     },
     {
       "id": "log-2230",
       "time": "22:30",
       "summary": "ASSETS RETURNED",
       "title": "22:30 — L",
-      "body": "かつて使用していた、三本の資金ラインが手元に戻ってきた。どれもワタリが用意したものだ。\n\n金が欲しくて手元に戻したかったわけではない。ただ、ワタリと共に世界と向き合っていたあの頃の気配を感じるものを取り戻したかったのかもしれない。表舞台から去った日に置いてきたもののうち、手放したくなかったものを拾い集めている。\n\nお菓子はお気に召しましたか、と後継者が言った。ニアは、今日が私の誕生日であるということを知っていたようだ。よく辿り着いたと言えば「 \"L\" ですから」と返してきた。\n私が築き上げた、世界一の探偵の名で返事をされるのは、悪い気分ではなかった。"
+      "body": "かつて使用していた、三本の資金ラインが手元に戻ってきた。どれもワタリが用意したものだ。\n\n金が欲しくて手元に戻したかったわけではない。ただ、ワタリと共に世界と向き合っていたあの頃の気配を感じるものを取り戻したかったのかもしれない。表舞台から去った日に置いてきたもののうち、手放したくなかったものを拾い集めている。\n\nお菓子はお気に召しましたか、と後継者が言った。ニアは、今日が私の誕生日であるということを知っていたようだ。よく辿り着いたと言えば「 \"L\" ですから」と返してきた。\n私が築き上げた、世界一の探偵の名で返事をされるのは、悪い気分ではなかった。",
+      "eventLines": [
+        "CASE | Three Watari-established funding routes returned and verified.",
+        "LOCAL | Successor acknowledges Halloween and birthday."
+      ]
     },
     {
       "id": "log-2310",
       "time": "23:10",
       "summary": "PERSONAL RECORD",
       "title": "23:10 — L",
-      "body": "彼女がタルトタタンの型を返した。りんごは崩れることなく花のように咲いており、成功ですね、と声を掛けた。スイーツの仕上がりは、犯人確保に次ぐ大事なことだ。\n私のために用意されたパイとタルトを交互に食べた。どちらかを選ぶ必要も理由もない。全てが私のものなのだから。\n\n彼女は、いつだって私のことを好きなのだと言ってくれた。世界一の探偵だった頃も、竜崎と呼ばれていた頃も、今も。どんな名前でも、どんな立場でも。\n\nそれは彼女の言動から容易に推測できる事実だが、それでも彼女の口から聞きたかった。推理して答えに辿り着くのと、差し出される答えとは、手触りが違う。取るのと貰うのが違うように。\n\n玄関で受け取ったキャンディは、まだ食べていない。食べれば消えてしまうという事実に、何となく手をつけられなかった。世界一の探偵ではなく、「私」という個人に手渡されたものを大切にしたいと思った。キャンディもパイもタルトタタンも、全てが私のための、私だけのものだ。\nそしてそれは、彼女という存在も例外ではない。"
+      "body": "彼女がタルトタタンの型を返した。りんごは崩れることなく花のように咲いており、成功ですね、と声を掛けた。スイーツの仕上がりは、犯人確保に次ぐ大事なことだ。\n私のために用意されたパイとタルトを交互に食べた。どちらかを選ぶ必要も理由もない。全てが私のものなのだから。\n\n彼女は、いつだって私のことを好きなのだと言ってくれた。世界一の探偵だった頃も、竜崎と呼ばれていた頃も、今も。どんな名前でも、どんな立場でも。\n\nそれは彼女の言動から容易に推測できる事実だが、それでも彼女の口から聞きたかった。推理して答えに辿り着くのと、差し出される答えとは、手触りが違う。取るのと貰うのが違うように。\n\n玄関で受け取ったキャンディは、まだ食べていない。食べれば消えてしまうという事実に、何となく手をつけられなかった。世界一の探偵ではなく、「私」という個人に手渡されたものを大切にしたいと思った。キャンディもパイもタルトタタンも、全てが私のための、私だけのものだ。\nそしてそれは、彼女という存在も例外ではない。",
+      "eventLines": [
+        "CASE | Operational role returned to the current L.",
+        "LOCAL | Pumpkin pie and tarte Tatin served. Candy remains uneaten."
+      ]
     },
     {
       "id": "log-2359",
       "time": "23:59",
       "summary": "SESSION EXPIRED",
       "title": "23:59 — L",
-      "body": "この後は、誰にも邪魔をされたくない。\n\nTrick or Treat.\n\nお菓子ならもうあげたじゃない、と彼女は言ったが、まだ足りない。\n\nハロウィンという一日は終わり、生死の境目が閉じる。\n彼女が私のシャツを掴んで、自分から唇を寄せてきた。それで気が変わった。TrickとTreat、両方いただくことにする。ハロウィンが終わればルールは無効だ。もてなしも受けるし、悪戯もさせてもらおう。\n\n彼女を腕に抱き込んだまま、ランタンの火を吹き消した。道標は必要ない。帰る場所は、もう手の中にある。"
+      "body": "この後は、誰にも邪魔をされたくない。\n\nTrick or Treat.\n\nお菓子ならもうあげたじゃない、と彼女は言ったが、まだ足りない。\n\nハロウィンという一日は終わり、生死の境目が閉じる。\n彼女が私のシャツを掴んで、自分から唇を寄せてきた。それで気が変わった。TrickとTreat、両方いただくことにする。ハロウィンが終わればルールは無効だ。もてなしも受けるし、悪戯もさせてもらおう。\n\n彼女を腕に抱き込んだまま、ランタンの火を吹き消した。道標は必要ない。帰る場所は、もう手の中にある。",
+      "eventLines": [
+        "CASE | Temporary session reaches expiry at midnight.",
+        "LOCAL | Lantern extinguished. Private record ends."
+      ]
     }
   ]
 }</script>
 <script>
 'use strict';
-// 誕生日小説を公開したら、log-data 内の birthdayNovelURL にPixivのURLを入れます。
-// SECRET LOGは演出です。このHTMLに含まれる本文は公開されます。
+// birthdayNovelURL に元小説の公開URLを設定できます。本文は誤字だけ直した元稿です。
 const LOG_CONFIG=JSON.parse(document.querySelector('#log-data').textContent);
-const record=document.querySelector('#record'),archive=document.querySelector('#archive-panel'),rows=document.querySelector('#log-rows');
-const entryButtons=new Map(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let activeIndex=-1,activeButton=null;
+const record=document.querySelector('#record'),rows=document.querySelector('#log-rows'),entryButtons=new Map();
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const typingTargets=[],skip=document.querySelector('#skip-replay'),typingStatus=document.querySelector('#typing-status');
+let activeIndex=-1,activeButton=null,typingIndex=0,typingOffset=0,typingTimer=null,replayDone=false,replayPaused=false;
 function safeExternalURL(value){try{const u=new URL(value);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
 document.querySelector('#archive-date').textContent=LOG_CONFIG.date;
 document.querySelector('#log-heading').textContent=LOG_CONFIG.day+' — ACTIVITY LOG';
 document.querySelector('#entry-count').textContent=LOG_CONFIG.entries.length+' RECORDS';
 const relatedURL=safeExternalURL(LOG_CONFIG.birthdayNovelURL);
 if(relatedURL){const a=document.querySelector('#related-novel');a.href=relatedURL;a.target='_blank';a.rel='noopener noreferrer';a.hidden=false;}
+function stopTypingTimer(){if(typingTimer!==null){clearTimeout(typingTimer);typingTimer=null;}}
+function finishReplay(){
+ stopTypingTimer();replayDone=true;
+ for(const target of typingTargets){target.element.textContent=target.text;target.element.classList.remove('typing-active');}
+ skip.disabled=true;typingStatus.textContent='ARCHIVE READY / '+LOG_CONFIG.entries.length+' RECORDS';
+}
+function tickReplay(){
+ typingTimer=null;if(replayDone||replayPaused)return;
+ if(typingIndex>=typingTargets.length){finishReplay();return;}
+ const target=typingTargets[typingIndex];target.element.classList.add('typing-active');
+ typingOffset=Math.min(typingOffset+6,target.text.length);target.element.textContent=target.text.slice(0,typingOffset);
+ if(typingOffset>=target.text.length){target.element.classList.remove('typing-active');typingIndex++;typingOffset=0;}
+ typingTimer=setTimeout(tickReplay,18);
+}
+function pauseReplay(){replayPaused=true;stopTypingTimer();}
+function resumeReplay(){replayPaused=false;if(!replayDone&&typingTimer===null)typingTimer=setTimeout(tickReplay,18);}
+function releaseRecord(){
+ document.body.classList.remove('modal-open');
+ if(activeButton){activeButton.setAttribute('aria-pressed','false');activeButton.focus({preventScroll:true});}
+ resumeReplay();
+}
 function openRecord(index,updateHistory){
  const entry=LOG_CONFIG.entries[index];if(!entry)return;
  if(activeButton)activeButton.setAttribute('aria-pressed','false');
  activeIndex=index;activeButton=entryButtons.get(entry.id);activeButton.setAttribute('aria-pressed','true');
  document.querySelector('#record-file').textContent=entry.id+'.txt';
+ document.querySelector('#record-window-name').textContent=entry.id+'.txt / L';
  document.querySelector('#record-time').textContent=LOG_CONFIG.date+' / '+entry.time;
  document.querySelector('#record-title').textContent=entry.title;
  document.querySelector('#record-count').textContent=String(index+1).padStart(2,'0')+' / '+String(LOG_CONFIG.entries.length).padStart(2,'0');
@@ -191,34 +286,43 @@ function openRecord(index,updateHistory){
  previous.textContent=index===0?'最初の記録':'← '+LOG_CONFIG.entries[index-1].time;
  next.textContent=next.disabled?'最後の記録':LOG_CONFIG.entries[index+1].time+' →';
  document.querySelector('#end-note').hidden=!next.disabled;
- archive.hidden=true;record.hidden=false;record.classList.remove('fade-record');void record.offsetWidth;record.classList.add('fade-record');
+ pauseReplay();document.body.classList.add('modal-open');
+ if(!record.open)record.showModal();
+ document.querySelector('#record-scroll').scrollTop=0;
+ document.querySelector('#record-close').focus({preventScroll:true});
  if(updateHistory)history.pushState(null,'','#'+entry.id);
- record.focus({preventScroll:true});record.scrollIntoView({behavior:'auto',block:'start'});
 }
 function closeRecord(updateHistory){
- record.hidden=true;archive.hidden=false;
- if(updateHistory)history.pushState(null,'',location.pathname+location.search);
- if(activeButton){activeButton.setAttribute('aria-pressed','false');activeButton.focus();activeButton.scrollIntoView({behavior:'auto',block:'center'});}
+ if(updateHistory&&location.hash)history.pushState(null,'',location.pathname+location.search);
+ if(record.open)record.close();else releaseRecord();
 }
+typingTargets.push({element:document.querySelector('#boot-text'),text:'Opening local archive...\n31 OCT 2026 / TEMPORARY L SESSION\nReplaying case and local activity...'});
 for(let index=0;index<LOG_CONFIG.entries.length;index++){
  const entry=LOG_CONFIG.entries[index],row=document.createElement('div');row.className='log-row';
  const button=document.createElement('button');button.className='time';button.type='button';
  const time=document.createElement('span');time.textContent=entry.time;button.append(time);
- button.setAttribute('aria-label',entry.time+'の記録を開く');button.setAttribute('aria-pressed','false');button.setAttribute('aria-controls','record');button.addEventListener('click',function(){openRecord(index,true);});
- const summary=document.createElement('span');summary.className='summary';summary.textContent=entry.summary;
+ button.setAttribute('aria-label',entry.time+'の小説ウィンドウを開く');button.setAttribute('aria-pressed','false');button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','record');button.addEventListener('click',function(){openRecord(index,true);});
+ const summary=document.createElement('div');summary.className='summary';
+ for(const text of entry.eventLines){
+  const line=document.createElement('div');line.className='log-line';
+  const ghost=document.createElement('span');ghost.className='layout-text';ghost.textContent=text;ghost.setAttribute('aria-hidden','true');
+  const typed=document.createElement('span');typed.className='typed-line';typed.setAttribute('aria-hidden','true');
+  const accessible=document.createElement('span');accessible.className='sr-only';accessible.textContent=text;
+  line.append(ghost,typed,accessible);summary.append(line);typingTargets.push({element:typed,text:text});
+ }
  const arrow=document.createElement('span');arrow.className='row-arrow';arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
  row.append(button,summary,arrow);rows.append(row);entryButtons.set(entry.id,button);
 }
+skip.addEventListener('click',finishReplay);
 document.querySelector('#record-close').addEventListener('click',function(){closeRecord(true);});
 document.querySelector('#record-list').addEventListener('click',function(){closeRecord(true);});
+record.addEventListener('cancel',function(event){event.preventDefault();closeRecord(true);});
+record.addEventListener('close',releaseRecord);
 document.querySelector('#previous-record').addEventListener('click',function(){if(activeIndex>0)openRecord(activeIndex-1,true);});
 document.querySelector('#next-record').addEventListener('click',function(){if(activeIndex<LOG_CONFIG.entries.length-1)openRecord(activeIndex+1,true);});
-document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!record.hidden)closeRecord(true);});
-function restoreHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}const index=LOG_CONFIG.entries.findIndex(function(entry){return entry.id===id;});if(index>=0)openRecord(index,false);else closeRecord(false);}
+function restoreHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}const index=LOG_CONFIG.entries.findIndex(function(entry){return entry.id===id;});if(index>=0)openRecord(index,false);else if(record.open)closeRecord(false);}
 window.addEventListener('popstate',restoreHash);window.addEventListener('hashchange',restoreHash);
-const bootLines=['Opening local archive…','31 OCT 2026 / LOCAL COPY','Ready.'],boot=document.querySelector('#boot-text');
-let bootFrame=0;function nextBoot(){boot.textContent=bootLines.slice(0,++bootFrame).join('\n');if(bootFrame<bootLines.length)setTimeout(nextBoot,220);}
-if(reduced)boot.textContent=bootLines.join('\n');else nextBoot();
+if(reduced)finishReplay();else tickReplay();
 restoreHash();
 </script>
 </body>
